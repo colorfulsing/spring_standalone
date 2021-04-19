@@ -3,7 +3,7 @@ require "fileutils"
 require "timeout"
 require "active_support/core_ext/numeric/time"
 
-module Spring
+module SpringStandalone
   module Test
     class WatcherTest < ActiveSupport::TestCase
       runnables.delete self # prevent Minitest running this class

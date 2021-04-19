@@ -1,4 +1,4 @@
 require_relative "helper"
 
-class AcceptanceTest < Spring::Test::AcceptanceTest
+class AcceptanceTest < SpringStandalone::Test::AcceptanceTest
 end

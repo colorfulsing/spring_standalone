@@ -1,10 +1,10 @@
 require_relative "../helper"
 require_relative "../support/watcher_test"
-require "spring/watcher/polling"
+require "spring_standalone/watcher/polling"
 
-class PollingWatcherTest < Spring::Test::WatcherTest
+class PollingWatcherTest < SpringStandalone::Test::WatcherTest
   def watcher_class
-    Spring::Watcher::Polling
+    SpringStandalone::Watcher::Polling
   end
 
   test "skips staleness checks if already stale" do

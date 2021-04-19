@@ -1,6 +1,6 @@
-require "spring/env"
+require "spring_standalone/env"
 
-module Spring
+module SpringStandalone
   module Test
     class Application
       DEFAULT_TIMEOUT = ENV['CI'] ? 300 : 10
@@ -9,7 +9,7 @@ module Spring
 
       def initialize(root)
         @root       = Pathname.new(root)
-        @spring_env = Spring::Env.new(root: root)
+        @spring_env = SpringStandalone::Env.new(root: root)
         @times      = nil
       end
 

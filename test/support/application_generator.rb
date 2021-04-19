@@ -1,4 +1,4 @@
-module Spring
+module SpringStandalone
   module Test
     class ApplicationGenerator
       attr_reader :version_constraint, :version, :application
@@ -12,11 +12,11 @@ module Spring
       end
 
       def test_root
-        Pathname.new Spring::Test.root
+        Pathname.new SpringStandalone::Test.root
       end
 
       def root
-        test_root.join("apps/rails-#{version.major}-#{version.minor}-spring-#{Spring::VERSION}")
+        test_root.join("apps/rails-#{version.major}-#{version.minor}-spring-#{SpringStandalone::VERSION}")
       end
 
       def system(command)
@@ -52,7 +52,7 @@ module Spring
         FileUtils.mkdir_p(application.user_home)
         FileUtils.rm_rf(application.path("test/performance"))
 
-        append_to_file(application.gemfile, "gem 'spring', '#{Spring::VERSION}'")
+        append_to_file(application.gemfile, "gem 'spring', '#{SpringStandalone::VERSION}'")
 
         rewrite_file(application.gemfile) do |c|
           c.sub!("https://rubygems.org", "http://rubygems.org")

@@ -3,7 +3,7 @@ require "active_support/test_case"
 
 ActiveSupport.test_order = :random
 
-module Spring
+module SpringStandalone
   module Test
     class << self
       attr_accessor :root

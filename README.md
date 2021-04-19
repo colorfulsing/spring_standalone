@@ -1,11 +1,11 @@
-# Spring
+# SpringStandalone
 
-[![Build Status](https://travis-ci.org/rails/spring.svg?branch=master)](https://travis-ci.org/rails/spring)
-[![Gem Version](https://badge.fury.io/rb/spring.svg)](http://badge.fury.io/rb/spring)
+[![Gem Version](https://badge.fury.io/rb/spring_standalone.svg)](http://badge.fury.io/rb/spring_standalone)
 
-Spring is a Rails application preloader. It speeds up development by
+SpringStandalone Standalone is a ruby application preloader based on SpringStandalone, a Rails
+application preloader. It speeds up development by
 keeping your application running in the background so you don't need to
-boot it every time you run a test, rake task or migration.
+boot it every time you run your application commands.
 
 ## Features
 
@@ -17,45 +17,44 @@ boot it every time you run a test, rake task or migration.
 ## Compatibility
 
 * Ruby versions: MRI 2.5, MRI 2.6
-* Rails versions: 5.2, 6.0 (Spring is installed by default when you do
-  `rails new` to generate your application)
 
-Spring makes extensive use of `Process.fork`, so won't be able to
+SpringStandalone Standalone makes extensive use of `Process.fork` (inherited from SpringStandalone
+gem), so won't be able to
 provide a speed up on platforms which don't support forking (Windows, JRuby).
 
 ## Walkthrough
 
 ### Setup
 
-Add Spring to your Gemfile:
+Add SpringStandalone to your Gemfile:
 
 ``` ruby
-gem "spring", group: :development
+gem "spring_standalone", group: :development
 ```
 
-(Note: using `gem "spring", git: "..."` *won't* work and is not a
-supported way of using Spring.)
+(Note: using `gem "spring_standalone", git: "..."` *won't* work and is not a
+supported way of using SpringStandalone.)
 
 It's recommended to 'springify' the executables in your `bin/`
 directory:
 
 ```
 $ bundle install
-$ bundle exec spring binstub --all
+$ bundle exec spring_sa binstub --all
 ```
 
-This generates a `bin/spring` executable, and inserts a small snippet of
+This generates a `bin/spring_sa` executable, and inserts a small snippet of
 code into relevant existing executables. The snippet looks like this:
 
 ``` ruby
 begin
-  load File.expand_path('../spring', __FILE__)
+  load File.expand_path('../spring_sa', __FILE__)
 rescue LoadError
 end
 ```
 
-On platforms where Spring is installed and supported, this snippet
-hooks Spring into the execution of commands. In other cases, the snippet
+On platforms where SpringStandalone Standalone is installed and supported, this snippet
+hooks SpringStandalone into the execution of commands. In other cases, the snippet
 will just be silently ignored and the lines after it will be executed as
 normal.
 
@@ -74,7 +73,7 @@ Let's run a test:
 
 ```
 $ time bin/rake test test/controllers/posts_controller_test.rb
-Running via Spring preloader in process 2734
+Running via SpringStandalone preloader in process 2734
 Run options:
 
 # Running tests:
@@ -90,12 +89,12 @@ user    0m0.281s
 sys     0m0.066s
 ```
 
-That wasn't particularly fast because it was the first run, so Spring
+That wasn't particularly fast because it was the first run, so SpringStandalone
 had to boot the application. It's now running:
 
 ```
 $ bin/spring status
-Spring is running:
+SpringStandalone is running:
 
 26150 spring server | spring-demo-app | started 3 secs ago
 26155 spring app    | spring-demo-app | started 3 secs ago | test mode
@@ -105,7 +104,7 @@ The next run is faster:
 
 ```
 $ time bin/rake test test/controllers/posts_controller_test.rb
-Running via Spring preloader in process 8352
+Running via SpringStandalone preloader in process 8352
 Run options:
 
 # Running tests:
@@ -136,7 +135,7 @@ Let's "edit" `config/application.rb`:
 ```
 $ touch config/application.rb
 $ bin/spring status
-Spring is running:
+SpringStandalone is running:
 
 26150 spring server | spring-demo-app | started 36 secs ago
 26556 spring app    | spring-demo-app | started 1 sec ago | test mode
@@ -150,7 +149,7 @@ environment gets booted up:
 
 ```
 $ bin/rake routes
-Running via Spring preloader in process 2363
+Running via SpringStandalone preloader in process 2363
     posts GET    /posts(.:format)          posts#index
           POST   /posts(.:format)          posts#create
  new_post GET    /posts/new(.:format)      posts#new
@@ -160,34 +159,34 @@ edit_post GET    /posts/:id/edit(.:format) posts#edit
           DELETE /posts/:id(.:format)      posts#destroy
 
 $ bin/spring status
-Spring is running:
+SpringStandalone is running:
 
 26150 spring server | spring-demo-app | started 1 min ago
 26556 spring app    | spring-demo-app | started 42 secs ago | test mode
 26707 spring app    | spring-demo-app | started 2 secs ago | development mode
 ```
 
-There's no need to "shut down" Spring. This will happen automatically
+There's no need to "shut down" SpringStandalone. This will happen automatically
 when you close your terminal. However if you do want to do a manual shut
 down, use the `stop` command:
 
 ```
 $ bin/spring stop
-Spring stopped.
+SpringStandalone stopped.
 ```
 
-From within your code, you can check whether Spring is active with `if defined?(Spring)`.
+From within your code, you can check whether SpringStandalone is active with `if defined?(SpringStandalone)`.
 
 ### Removal
 
-To remove Spring:
+To remove SpringStandalone:
 
 * 'Unspring' your bin/ executables: `bin/spring binstub --remove --all`
 * Remove spring from your Gemfile
 
 ### Deployment
 
-You must not install Spring on your production environment. To prevent it from
+You must not install SpringStandalone on your production environment. To prevent it from
 being installed, provide the `--without development test` argument to the
 `bundle install` command which is used to install gems on your production
 machines:
@@ -203,22 +202,22 @@ $ bundle install --without development test
 Runs a rake task. Rake tasks run in the `development` environment by
 default. You can change this on the fly by using the `RAILS_ENV`
 environment variable. The environment is also configurable with the
-`Spring::Commands::Rake.environment_matchers` hash. This has sensible
+`SpringStandalone::Commands::Rake.environment_matchers` hash. This has sensible
 defaults, but if you need to match a specific task to a specific
 environment, you'd do it like this:
 
 ``` ruby
-Spring::Commands::Rake.environment_matchers["perf_test"] = "test"
-Spring::Commands::Rake.environment_matchers[/^perf/]     = "test"
+SpringStandalone::Commands::Rake.environment_matchers["perf_test"] = "test"
+SpringStandalone::Commands::Rake.environment_matchers[/^perf/]     = "test"
 
 # To change the environment when you run `rake` with no arguments
-Spring::Commands::Rake.environment_matchers[:default] = "development"
+SpringStandalone::Commands::Rake.environment_matchers[:default] = "development"
 ```
 
 ### `rails console`, `rails generate`, `rails runner`
 
 These execute the rails command you already know and love. If you run
-a different sub command (e.g. `rails server`) then Spring will automatically
+a different sub command (e.g. `rails server`) then SpringStandalone will automatically
 pass it through to the underlying `rails` executable (without the
 speed-up).
 
@@ -241,23 +240,23 @@ You can add these to your Gemfile for additional commands:
 
 ## Use without adding to bundle
 
-If you don't want Spring-related code checked into your source
-repository, it's possible to use Spring without adding to your Gemfile.
-However, using Spring binstubs without adding Spring to the Gemfile is not
+If you don't want SpringStandalone-related code checked into your source
+repository, it's possible to use SpringStandalone without adding to your Gemfile.
+However, using SpringStandalone binstubs without adding SpringStandalone to the Gemfile is not
 supported.
 
-To use Spring like this, do a `gem install spring` and then prefix
+To use SpringStandalone like this, do a `gem install spring` and then prefix
 commands with `spring`. For example, rather than running `bin/rake -T`,
 you'd run `spring rake -T`.
 
-## Temporarily disabling Spring
+## Temporarily disabling SpringStandalone
 
-If you're using Spring binstubs, but temporarily don't want commands to
-run through Spring, set the `DISABLE_SPRING` environment variable.
+If you're using SpringStandalone binstubs, but temporarily don't want commands to
+run through SpringStandalone, set the `DISABLE_SPRING` environment variable.
 
 ## Class reloading
 
-Spring uses Rails' class reloading mechanism
+SpringStandalone uses Rails' class reloading mechanism
 (`ActiveSupport::Dependencies`) to keep your code up to date between
 test runs. This is the same mechanism which allows you to see changes
 during development when you refresh the page. However, you may never
@@ -296,16 +295,16 @@ false
 So to avoid this problem, don't save off references to application
 constants in your initialization code.
 
-## Using Spring with a containerized development environment
+## Using SpringStandalone with a containerized development environment
 
-As of Spring 1.7, there is some support for doing this. See [this
+As of SpringStandalone 1.7, there is some support for doing this. See [this
 example
 repository](https://github.com/jonleighton/spring-docker-example) for
 information about how to do it with [Docker](https://www.docker.com/).
 
 ## Configuration
 
-Spring will read `~/.spring.rb` and `config/spring.rb` for custom
+SpringStandalone will read `~/.spring.rb` and `config/spring.rb` for custom
 settings. Note that `~/.spring.rb` is loaded *before* bundler, but
 `config/spring.rb` is loaded *after* bundler. So if you have any
 `spring-commands-*` gems installed that you want to be available in all
@@ -317,18 +316,18 @@ server process is started, it can be used to add new top-level commands.
 
 ### Application root
 
-Spring must know how to find your Rails application. If you have a
+SpringStandalone must know how to find your Rails application. If you have a
 normal app everything works out of the box. If you are working on a
 project with a special setup (an engine for example), you must tell
-Spring where your app is located:
+SpringStandalone where your app is located:
 
 ```ruby
-Spring.application_root = './test/dummy'
+SpringStandalone.application_root = './test/dummy'
 ```
 
 ### Running code before forking
 
-There is no `Spring.before_fork` callback. To run something before the
+There is no `SpringStandalone.before_fork` callback. To run something before the
 fork, you can place it in `~/.spring.rb` or `config/spring.rb` or in any of the files
 which get run when your application initializes, such as
 `config/application.rb`, `config/environments/*.rb` or
@@ -336,33 +335,33 @@ which get run when your application initializes, such as
 
 ### Running code after forking
 
-You might want to run code after Spring forked off the process but
+You might want to run code after SpringStandalone forked off the process but
 before the actual command is run. You might want to use an
 `after_fork` callback if you have to connect to an external service,
 do some general cleanup or set up dynamic configuration.
 
 ```ruby
-Spring.after_fork do
+SpringStandalone.after_fork do
   # run arbitrary code
 end
 ```
 
 If you want to register multiple callbacks you can simply call
-`Spring.after_fork` multiple times with different blocks.
+`SpringStandalone.after_fork` multiple times with different blocks.
 
 ### Watching files and directories
 
-Spring will automatically detect file changes to any file loaded when the server
+SpringStandalone will automatically detect file changes to any file loaded when the server
 boots. Changes will cause the affected environments to be restarted.
 
 If there are additional files or directories which should trigger an
-application restart, you can specify them with `Spring.watch`:
+application restart, you can specify them with `SpringStandalone.watch`:
 
 ```ruby
-Spring.watch "config/some_config_file.yml"
+SpringStandalone.watch "config/some_config_file.yml"
 ```
 
-By default Spring polls the filesystem for changes once every 0.2 seconds. This
+By default SpringStandalone polls the filesystem for changes once every 0.2 seconds. This
 method requires zero configuration, but if you find that it's using too
 much CPU, then you can use event-based file system listening by
 installing the
@@ -371,22 +370,22 @@ gem.
 
 ### Quiet output
 
-To disable the "Running via Spring preloader" message which is shown each time
+To disable the "Running via SpringStandalone preloader" message which is shown each time
 a command runs:
 
 ``` ruby
-Spring.quiet = true
+SpringStandalone.quiet = true
 ```
 
 ### Environment variables
 
-The following environment variables are used by Spring:
+The following environment variables are used by SpringStandalone:
 
-* `DISABLE_SPRING` - If set, Spring will be bypassed and your
+* `DISABLE_SPRING` - If set, SpringStandalone will be bypassed and your
   application will boot in a foreground process
-* `SPRING_LOG` - The path to a file which Spring will write log messages
+* `SPRING_LOG` - The path to a file which SpringStandalone will write log messages
   to.
-* `SPRING_TMP_PATH` - The directory where Spring should write its temporary
+* `SPRING_TMP_PATH` - The directory where SpringStandalone should write its temporary
   files (a pidfile and a socket). By default we use the
   `XDG_RUNTIME_DIR` environment variable, or else `Dir.tmpdir`, and then
   create a directory in that named `spring-$UID`. We don't use your
@@ -396,20 +395,20 @@ The following environment variables are used by Spring:
   applications. By default it is an MD5 hash of the current
   `RUBY_VERSION`, and the path to your Rails project root.
 * `SPRING_SOCKET` - The path which should be used for the UNIX socket
-  which Spring uses to communicate with the long-running Spring server
+  which SpringStandalone uses to communicate with the long-running SpringStandalone server
   process. By default this is `SPRING_TMP_PATH/SPRING_APPLICATION_ID`.
 * `SPRING_PIDFILE` - The path which should be used to store the pid of
-  the long-running Spring server process. By default this is related to
+  the long-running SpringStandalone server process. By default this is related to
   the socket path; if the socket path is `/foo/bar/spring.sock` the
   pidfile will be `/foo/bar/spring.pid`.
-* `SPRING_SERVER_COMMAND` - The command to run to start up the Spring
+* `SPRING_SERVER_COMMAND` - The command to run to start up the SpringStandalone
   server when it is not already running. Defaults to `spring _[version]_
   server --background`.
 
 ## Troubleshooting
 
-If you want to get more information about what Spring is doing, you can
-run Spring explicitly in a separate terminal:
+If you want to get more information about what SpringStandalone is doing, you can
+run SpringStandalone explicitly in a separate terminal:
 
 ```
 $ spring server

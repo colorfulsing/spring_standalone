@@ -1,4 +1,4 @@
-module Spring
+module SpringStandalone
   module Test
     class RailsVersion
       attr_reader :version

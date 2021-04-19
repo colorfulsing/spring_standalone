@@ -21,12 +21,12 @@
 ## 2.0.2
 
 * Fix reloading when a watched directory contains a dangling symlink (#522)
-* Watcher logs its activity to the Spring log (#522)
+* Watcher logs its activity to the SpringStandalone log (#522)
 * Polling watcher stops polling after changes have been detected (#523)
 
 ## 2.0.1
 
-* Fix bug which could cause Spring to hang when `Thread.abort_on_exception` is `true` (#497)
+* Fix bug which could cause SpringStandalone to hang when `Thread.abort_on_exception` is `true` (#497)
 
 ## 2.0.0
 
@@ -36,7 +36,7 @@
 
 ## 1.7.2
 
-* Use `Spring.failsafe_thread` to prevent threads from aborting process due to `Thread.abort_on_exception` when set to `true`
+* Use `SpringStandalone.failsafe_thread` to prevent threads from aborting process due to `Thread.abort_on_exception` when set to `true`
 
 ## 1.7.1
 
@@ -50,12 +50,12 @@
 ## 1.7.0
 
 * Auto-restart server when server and client versions do not match
-* Add `spring server` command to explicitly start a Spring server
+* Add `spring server` command to explicitly start a SpringStandalone server
   process in the foreground, which logging to stdout. This will be
   useful to those who want to run spring more explicitly, but the real
   impetus was to enable running a spring server inside a Docker
   container.
-* Numerous other tweaks to better support running Spring inside
+* Numerous other tweaks to better support running SpringStandalone inside
   containers (see
   https://github.com/jonleighton/spring-docker-example)
 
@@ -69,9 +69,9 @@
 
 ## 1.6.2
 
-* Fix problems with the implementation of the new "Running via Spring preloader"
+* Fix problems with the implementation of the new "Running via SpringStandalone preloader"
   message (see #456, #457)
-* Print "Running via Spring preloader" message to stderr, not stdout
+* Print "Running via SpringStandalone preloader" message to stderr, not stdout
 
 ## 1.6.1
 
@@ -79,7 +79,7 @@
 
 ## 1.6.0
 
-* show when spring is used automatically to remind people why things might fail, disable with `Spring.quiet = true`
+* show when spring is used automatically to remind people why things might fail, disable with `SpringStandalone.quiet = true`
 
 ## 1.5.0
 
@@ -107,7 +107,7 @@
 
 ## 1.3.6
 
-* Ensure the spawned server is loaded from the same version of the Spring gem
+* Ensure the spawned server is loaded from the same version of the SpringStandalone gem
   as the client. Issue #295.
 
 ## 1.3.5
@@ -138,7 +138,7 @@
 * Automatically restart spring after new commands are added. This means
   that you can add spring-commands-rspec to your Gemfile and then
   immediately start using it, without having to run `spring stop`.
-  (Spring will effectively run `spring stop` for you.)
+  (SpringStandalone will effectively run `spring stop` for you.)
 * Make app reloading work in apps which spew out lots of output on
   startup (previously a buffer would fill up and cause the process to
   hang). Issue #332.
@@ -168,7 +168,7 @@
 
 ## 1.1.2
 
-* Detect old binstubs generated with Spring 1.0 and exit with an error.
+* Detect old binstubs generated with SpringStandalone 1.0 and exit with an error.
   This prevents a situation where you can get stuck in an infinite loop
   of spring invocations.
 * Avoid `warning: already initialized constant APP_PATH` when running
@@ -263,7 +263,7 @@
   with Rubygems 2.1, so we no longer need to generate a "spring" binstub
   file. We warn users if they are not taking advantage of the Rubygems
   perf fix (e.g. if they are not on 2.1, or haven't run `gem pristine
-  --all`). To upgrade, delete your `bin/spring` and re-run `spring
+  --all`). To upgrade, delete your `bin/spring_sa` and re-run `spring
   binstub` for each of your binstubs.
 * Binstubs now fall back to non-spring execution of a command if the
   spring gem is not present. This might be useful for production
@@ -292,12 +292,12 @@
 
 ## 0.0.10
 
-* Added `Spring.watch_method=` configuration option to switch between
+* Added `SpringStandalone.watch_method=` configuration option to switch between
   polling and the `listen` gem. Previously, we used the `listen` gem if
   it was available, but this makes the option explicit. Set
-  `Spring.watch_method = :listen` to use the listen gem.
+  `SpringStandalone.watch_method = :listen` to use the listen gem.
 * Fallback when Process.fork is not available. In such cases, the user
-  will not receive the speedup that Spring provides, but won't receive
+  will not receive the speedup that SpringStandalone provides, but won't receive
   an error either.
 * Don't preload `test_helper` or `spec_helper` by default. This was
   causing people subtle problems (for example see #113) and is perhaps
@@ -319,13 +319,13 @@
 
 ## 0.0.9
 
-* Added `Spring::Commands::Rake.environment_matchers` for matching
+* Added `SpringStandalone::Commands::Rake.environment_matchers` for matching
   rake tasks to specific environments.
 * Kill the spring server when the `Gemfile` or `Gemfile.lock` is
   changed. This forces a new server to boot up on the next run, which
   ensures that you get the correct gems (or the correct error message from
   bundler if you have forgotten to `bundle install`.)
-* Fixed error when `Spring.watch` is used in `config/spring.rb`
+* Fixed error when `SpringStandalone.watch` is used in `config/spring.rb`
 
 ## 0.0.8
 

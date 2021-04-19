@@ -1,11 +1,11 @@
 require_relative "../helper"
-require "spring/process_title_updater"
+require "spring_standalone/process_title_updater"
 require "active_support/time"
 
 class ProcessTitleUpdaterTest < ActiveSupport::TestCase
   setup do
     @start   = Time.local(2012, 2, 12, 4, 3, 12)
-    @updater = Spring::ProcessTitleUpdater.new(@start) { }
+    @updater = SpringStandalone::ProcessTitleUpdater.new(@start) { }
   end
 
   test "seconds" do

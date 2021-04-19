@@ -1,10 +1,10 @@
 require "io/wait"
 require "timeout"
-require "spring/sid"
-require "spring/client"
+require "spring_standalone/sid"
+require "spring_standalone/client"
 require "active_support/core_ext/string/strip"
 
-module Spring
+module SpringStandalone
   module Test
     class AcceptanceTest < ActiveSupport::TestCase
       runnables.delete self # prevent Minitest running this class
@@ -17,7 +17,7 @@ module Spring
 
       # Extension point for spring-watchers-listen
       def generator_klass
-        Spring::Test::ApplicationGenerator
+        SpringStandalone::Test::ApplicationGenerator
       end
 
       def generator
@@ -25,7 +25,7 @@ module Spring
       end
 
       def app
-        @app ||= Spring::Test::Application.new("#{Spring::Test.root}/apps/tmp")
+        @app ||= SpringStandalone::Test::Application.new("#{SpringStandalone::Test.root}/apps/tmp")
       end
 
       def spring_env
@@ -106,15 +106,15 @@ module Spring
         refute spring_env.server_running?
       end
 
-      test "tells the user that Spring is being used when used automatically via binstubs" do
-        assert_success "bin/rails runner ''", stderr: "Running via Spring preloader in process"
-        assert_success app.spring_test_command, stderr: "Running via Spring preloader in process"
+      test "tells the user that SpringStandalone is being used when used automatically via binstubs" do
+        assert_success "bin/rails runner ''", stderr: "Running via SpringStandalone preloader in process"
+        assert_success app.spring_test_command, stderr: "Running via SpringStandalone preloader in process"
       end
 
-      test "does not tell the user that Spring is being used when used automatically via binstubs but quiet is enabled" do
-        File.write("#{app.user_home}/.spring.rb", "Spring.quiet = true")
+      test "does not tell the user that SpringStandalone is being used when used automatically via binstubs but quiet is enabled" do
+        File.write("#{app.user_home}/.spring.rb", "SpringStandalone.quiet = true")
         assert_success "bin/rails runner ''"
-        refute_output_includes "bin/rails runner ''", stderr: 'Running via Spring preloader in process'
+        refute_output_includes "bin/rails runner ''", stderr: 'Running via SpringStandalone preloader in process'
       end
 
       test "test changes are picked up" do
@@ -217,7 +217,7 @@ module Spring
             end
           end
 
-          Spring.register_command "custom", CustomCommand.new
+          SpringStandalone.register_command "custom", CustomCommand.new
         RUBY
 
         assert_success "bin/spring custom", stdout: "omg"
@@ -232,14 +232,14 @@ module Spring
       test "binstub" do
         assert_success "bin/rails server --help", stdout: /Usage:\s+rails server/ # rails command fallback
 
-        assert_success "#{app.spring} binstub rake", stdout: "bin/rake: Spring already present"
+        assert_success "#{app.spring} binstub rake", stdout: "bin/rake: SpringStandalone already present"
 
-        assert_success "#{app.spring} binstub --remove rake", stdout: "bin/rake: Spring removed"
-        assert !app.path("bin/rake").read.include?(Spring::Client::Binstub::LOADER)
+        assert_success "#{app.spring} binstub --remove rake", stdout: "bin/rake: SpringStandalone removed"
+        assert !app.path("bin/rake").read.include?(SpringStandalone::Client::Binstub::LOADER)
         assert_success "bin/rake -T", stdout: "rake db:migrate"
 
-        assert_success "#{app.spring} binstub rake", stdout: "bin/rake: Spring inserted"
-        assert app.path("bin/rake").read.include?(Spring::Client::Binstub::LOADER)
+        assert_success "#{app.spring} binstub rake", stdout: "bin/rake: SpringStandalone inserted"
+        assert app.path("bin/rake").read.include?(SpringStandalone::Client::Binstub::LOADER)
       end
 
       test "binstub remove all" do
@@ -248,7 +248,7 @@ module Spring
       end
 
       test "binstub when spring gem is missing" do
-        without_gem "spring-#{Spring::VERSION}" do
+        without_gem "spring-#{SpringStandalone::VERSION}" do
           File.write(app.gemfile, app.gemfile.read.gsub(/gem 'spring.*/, ""))
           assert_success "bin/rake -T", stdout: "rake db:migrate"
         end
@@ -280,7 +280,7 @@ module Spring
           # frozen_string_literal: true
           #
           # more comments
-          #{Spring::Client::Binstub::LOADER.strip}
+          #{SpringStandalone::Client::Binstub::LOADER.strip}
           require 'bundler/setup'
           load Gem.bin_path('rake', 'rake')
         RUBY
@@ -316,7 +316,7 @@ module Spring
 
         expected = <<-RUBY.gsub(/^          /, "")
           #!/usr/bin/env ruby
-          #{Spring::Client::Binstub::LOADER.strip}
+          #{SpringStandalone::Client::Binstub::LOADER.strip}
           require 'bundler/setup'
           load Gem.bin_path('rake', 'rake')
         RUBY
@@ -324,7 +324,7 @@ module Spring
 
         expected = <<-RUBY.gsub(/^          /, "")
           #!/usr/bin/env ruby
-          #{Spring::Client::Binstub::LOADER.strip}
+          #{SpringStandalone::Client::Binstub::LOADER.strip}
           APP_PATH = File.expand_path('../../config/application',  __FILE__)
           require_relative '../config/boot'
           require 'rails/commands'
@@ -335,7 +335,7 @@ module Spring
       test "binstub upgrade with new binstub variations" do
         expected = <<-RUBY.gsub(/^          /, "")
           #!/usr/bin/env ruby
-          #{Spring::Client::Binstub::LOADER.strip}
+          #{SpringStandalone::Client::Binstub::LOADER.strip}
           require 'bundler/setup'
           load Gem.bin_path('rake', 'rake')
         RUBY
@@ -409,8 +409,8 @@ module Spring
           require 'rails/commands'
         RUBY
 
-        assert_success "bin/spring binstub --remove rake", stdout: "bin/rake: Spring removed"
-        assert_success "bin/spring binstub --remove rails", stdout: "bin/rails: Spring removed"
+        assert_success "bin/spring binstub --remove rake", stdout: "bin/rake: SpringStandalone removed"
+        assert_success "bin/spring binstub --remove rails", stdout: "bin/rails: SpringStandalone removed"
 
         expected = <<-RUBY.strip_heredoc
           #!/usr/bin/env ruby
@@ -429,18 +429,18 @@ module Spring
       end
 
       test "after fork callback" do
-        File.write(app.spring_config, "Spring.after_fork { puts '!callback!' }")
+        File.write(app.spring_config, "SpringStandalone.after_fork { puts '!callback!' }")
         assert_success "bin/rails runner 'puts 2'", stdout: "!callback!\n2"
       end
 
       test "global config file evaluated" do
-        File.write("#{app.user_home}/.spring.rb", "Spring.after_fork { puts '!callback!' }")
+        File.write("#{app.user_home}/.spring.rb", "SpringStandalone.after_fork { puts '!callback!' }")
         assert_success "bin/rails runner 'puts 2'", stdout: "!callback!\n2"
       end
 
       test "can define client tasks" do
         File.write("#{app.spring_client_config}", <<-RUBY)
-          Spring::Client::COMMANDS["foo"] = lambda { |args| puts "bar -- \#{args.inspect}" }
+          SpringStandalone::Client::COMMANDS["foo"] = lambda { |args| puts "bar -- \#{args.inspect}" }
         RUBY
         assert_success "bin/spring foo --baz", stdout: "bar -- [\"foo\", \"--baz\"]\n"
       end
@@ -461,9 +461,9 @@ module Spring
       end
 
       test "status" do
-        assert_success "bin/spring status", stdout: "Spring is not running"
+        assert_success "bin/spring status", stdout: "SpringStandalone is not running"
         assert_success "bin/rails runner ''"
-        assert_success "bin/spring status", stdout: "Spring is running"
+        assert_success "bin/spring status", stdout: "SpringStandalone is running"
       end
 
       test "runner command sets Rails environment from command-line options" do
@@ -515,7 +515,7 @@ module Spring
         assert_failure %(bin/rails runner 'require "sqlite3"'), stderr: "sqlite3"
       end
 
-      test "changing the Gemfile works when Spring calls into itself" do
+      test "changing the Gemfile works when SpringStandalone calls into itself" do
         File.write(app.path("script.rb"), <<-RUBY.strip_heredoc)
           gemfile = Rails.root.join("Gemfile")
           File.write(gemfile, "\#{gemfile.read}gem 'text'\\n")
@@ -599,7 +599,7 @@ module Spring
       test "server boot timeout" do
         app.env["SPRING_SERVER_COMMAND"] = "sleep 1"
         File.write("#{app.spring_client_config}", %(
-          Spring::Client::Run.const_set(:BOOT_TIMEOUT, 0.1)
+          SpringStandalone::Client::Run.const_set(:BOOT_TIMEOUT, 0.1)
         ))
 
         assert_failure "bin/rails runner ''", stderr: "timed out"

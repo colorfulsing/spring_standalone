@@ -34,11 +34,11 @@ $ RAILS_VERSION="~> 3.2.0" rake test:acceptance
 ```
 
 The apps in `test/apps` will be named based on the rails version and the
-Spring version.
+SpringStandalone version.
 
 ## Testing with your app
 
-You cannot link to a git repo from your Gemfile. Spring doesn't support
+You cannot link to a git repo from your Gemfile. SpringStandalone doesn't support
 this due to the way that it gets loaded (bypassing bundler for
 performance reasons).
 

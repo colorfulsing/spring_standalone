@@ -1,15 +1,15 @@
 require_relative "../../helper"
 
-require 'spring/client/command'
-require 'spring/client/help'
-require 'spring/client'
+require 'spring_standalone/client/command'
+require 'spring_standalone/client/help'
+require 'spring_standalone/client'
 
 class HelpTest < ActiveSupport::TestCase
   def spring_commands
     {
       'command' => Class.new {
         def self.description
-          'Random Spring Command'
+          'Random SpringStandalone Command'
         end
       },
       'rails' => Class.new {
@@ -36,18 +36,18 @@ class HelpTest < ActiveSupport::TestCase
   end
 
   def setup
-    @help = Spring::Client::Help.new('help', spring_commands, application_commands)
+    @help = SpringStandalone::Client::Help.new('help', spring_commands, application_commands)
   end
 
   test "formatted_help generates expected output" do
     expected_output = <<-EOF
-Version: #{Spring::VERSION}
+Version: #{SpringStandalone::VERSION}
 
 Usage: spring COMMAND [ARGS]
 
-Commands for Spring itself:
+Commands for SpringStandalone itself:
 
-  command  Random Spring Command
+  command  Random SpringStandalone Command
 
 Commands for your application:
 
