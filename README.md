@@ -2,6 +2,13 @@
 
 [![Gem Version](https://badge.fury.io/rb/spring_standalone.svg)](http://badge.fury.io/rb/spring_standalone)
 
+**IMPORTANT**: The gem is functional and can be used with non rails projects, however, it is
+an experiment and I haven't updated neither the tests to drop dependency on `rails` command
+nor this `README.md` file to describe all it's functionalities, so whenever it refers to
+`bin/spring` replace it with `bin/spring_sa` and so on as well as ignore the plugins as those
+are not yet supported given it's usage on the `SpringStandalone.register_command` so keep that
+in mind while reading this README.
+
 SpringStandalone Standalone is a ruby application preloader based on SpringStandalone, a Rails
 application preloader. It speeds up development by
 keeping your application running in the background so you don't need to
